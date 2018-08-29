@@ -1,0 +1,1 @@
+This is a python educational port for mysql
