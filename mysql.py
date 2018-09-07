@@ -1,37 +1,6 @@
 import os
 import sys
-
-
-class Select:
-    def __init__(self, what_to_select, database, table):
-        table_location = "databases/%s/%s.csv" % (database, table)
-
-        if not os.path.isfile(table_location):
-            print("ERROR 1146 (42S02): Table '%s.%s' doesn't exist" % (database, table))
-
-        # print("DEBUG: table_location %s" % table_location)
-
-        table_handle = open(table_location, 'r')
-        table_header = table_handle.readline()
-        column_names = [x.rstrip().replace('"', '') for x in table_header.split(',')]
-        if what_to_select not in column_names:
-            print("ERROR 1054 (42S22): Unknown column '%s' in 'field list'" % what_to_select)
-        # print("Debug: Column names %s"% column_names)
-        column_positions = {}
-        column_position = 0
-        for column_name in column_names:
-            column_positions[column_name] = column_position
-            column_position += 1
-        # print("DEBUG: column positions= %s" %column_positions)
-        requested_position = column_positions[what_to_select]
-        print("+-------+")
-        print("| %s |" % what_to_select)
-        print("+-------+")
-        for line in table_handle:
-            values = [x.rstrip().replace('"', '') for x in line.split(',')]
-            print("| %s |" % values[requested_position])
-
-        print('+-------+')
+from operation import Select
 
 
 selected_database = None
