@@ -19,9 +19,8 @@ class Select:
         table_handle = open(self.table_location, 'r')
         table_header = table_handle.readline()
         self.generate_table_structure(table_header)
-        if what_to_select not in self.column_names:
-            print("ERROR 1054 (42S22): Unknown column '%s' in 'field list'" % what_to_select)
-        # print("Debug: Column names %s"% column_names)
+        if not self.validate_column(what_to_select):
+            return
         requested_position = self.column_positions[what_to_select]
         print("+-------+")
         print("| %s |" % what_to_select)
@@ -45,3 +44,10 @@ class Select:
             self.column_positions[column_name] = column_position
             column_position += 1
         # print("DEBUG: column positions= %s" %column_positions)
+
+    def validate_column(self, what_to_select):
+        if what_to_select not in self.column_names:
+            print("ERROR 1054 (42S22): Unknown column '%s' in 'field list'" % what_to_select)
+            return False
+        return True
+        # print("Debug: Column names %s"% column_names)
