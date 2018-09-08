@@ -21,13 +21,11 @@ class Select:
         self.generate_table_structure(table_header)
         if not self.validate_column(what_to_select):
             return
-        requested_position = self.column_positions[what_to_select]
         print("+-------+")
         print("| %s |" % what_to_select)
         print("+-------+")
         for line in table_handle:
-            values = [x.rstrip().replace('"', '') for x in line.split(',')]
-            print("| %s |" % values[requested_position])
+            print("| %s |" % self.get_by_column_name(what_to_select, line))
         print('+-------+')
 
     def validate_table(self):
@@ -51,3 +49,8 @@ class Select:
             return False
         return True
         # print("Debug: Column names %s"% column_names)
+
+    def get_by_column_name(self, what_to_select, line):
+        requested_position = self.column_positions[what_to_select]
+        values = [x.rstrip().replace('"', '') for x in line.split(',')]
+        return values[requested_position]
