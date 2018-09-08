@@ -1,4 +1,5 @@
 import os
+import re
 
 
 class Select:
@@ -7,10 +8,13 @@ class Select:
     table = None
     column_positions = {}
     column_names = None
+    requested_fields = []
 
-    def __init__(self, what_to_select, database, table):
+    def __init__(self, query, database):
+
+        self.parse_query(query)
+
         self.database = database
-        self.table = table
         self.table_location = "databases/%s/%s.csv" % (self.database, self.table)
 
         if not self.validate_table():
@@ -19,13 +23,13 @@ class Select:
         table_handle = open(self.table_location, 'r')
         table_header = table_handle.readline()
         self.generate_table_structure(table_header)
-        if not self.validate_column(what_to_select):
+        if not self.validate_column(self.requested_fields):
             return
         print("+-------+")
-        print("| %s |" % what_to_select)
+        print("| %s |" % self.requested_fields)
         print("+-------+")
         for line in table_handle:
-            print("| %s |" % self.get_by_column_name(what_to_select, line))
+            print("| %s |" % self.get_by_column_name(self.requested_fields, line))
         print('+-------+')
 
     def validate_table(self):
@@ -54,3 +58,10 @@ class Select:
         requested_position = self.column_positions[what_to_select]
         values = [x.rstrip().replace('"', '') for x in line.split(',')]
         return values[requested_position]
+
+    def parse_query(self, query: str):
+
+        query_groups = re.search('select (.*) from (.*)', query)
+
+        self.requested_fields = query_groups.group(1)
+        self.table = query_groups.group(2)

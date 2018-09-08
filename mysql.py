@@ -17,11 +17,7 @@ while True:
 
         if selected_database is None:
             print('ERROR 1046 (3D000): No database selected')
-        what = query_parts[1]
-        # print("Debug: what to select %s"% what_to_select)
-        from_keyword = query_parts[2]
-        requested_table = query_parts[3]
-        select_object = Select(what, selected_database, requested_table)
+        select_object = Select(query, selected_database)
 
     if action == 'use':
         database_to_select = query_parts[1]
